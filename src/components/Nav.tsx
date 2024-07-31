@@ -1,16 +1,55 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { User } from '../models/user';
 
-const Nav = () => {
+type NavProps = {
+  user: User | null;
+};
+
+const Nav: React.FC<NavProps> = ({ user }) => {
+  const logout = async () => {
+    try {
+      await axios.post('/logout');
+      // Redirect or handle post-logout actions here
+    } catch (error) {
+      console.error('Logout failed', error);
+    }
+  };
+
   return (
-    <header className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow" data-bs-theme="dark">
-    <a className="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Company name</a>
-    <ul className="navbar-nav px-3">
-      <li className="nav-item text-nowrap">
-        <a className="nav-link" href="#">Sign out</a>
-      </li>
-    </ul>
-  </header>
-  )
-}
+    <header className="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="#">
+          Company Name
+        </Link>
+        <div className="collapse navbar-collapse justify-content-end">
+          <ul className="navbar-nav">
+            {user ? (
+              <>
+                <li className="nav-item">
+                  <Link to="/profile" className="nav-link text-white">
+                    {user.first_name} {user.last_name}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link to="/login" className="nav-link text-white" onClick={logout}>
+                    Sign out
+                  </Link>
+                </li>
+              </>
+            ) : (
+              <li className="nav-item">
+                <Link to="/login" className="nav-link text-white">
+                  Sign in
+                </Link>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+    </header>
+  );
+};
 
-export default Nav
+export default Nav;

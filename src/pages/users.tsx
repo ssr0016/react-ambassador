@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { User } from '../models/user';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Alert, Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Alert, Box, TableFooter, TablePagination, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit'; // Removed SortIcon import
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -23,6 +26,15 @@ const Users: React.FC = () => {
     };
     fetchUsers();
   }, []);
+
+  const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   if (loading) return (
     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
@@ -50,17 +62,32 @@ const Users: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {users.map((user) => (
+              {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
                 <TableRow key={user.id}>
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.first_name} {user.last_name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    {/* Add action buttons or links here */}
+                    <IconButton>
+                      <EditIcon />
+                    </IconButton>
+                    {/* Add other action buttons or links here */}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[]} // Added options for rows per page
+                  count={users.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </TableRow>
+            </TableFooter>
           </Table>
         </Paper>
       </Box>

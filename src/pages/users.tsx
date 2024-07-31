@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { User } from '../models/user';
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Alert, Box } from '@mui/material';
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,35 +24,46 @@ const Users: React.FC = () => {
     fetchUsers();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <CircularProgress />
+    </Box>
+  );
+
+  if (error) return (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Alert severity="error">{error}</Alert>
+    </Box>
+  );
 
   return (
     <Layout>
-      <div className="table-responsive">
-        <table className="table table-striped table-sm">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Email</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.first_name} {user.last_name}</td>
-                <td>{user.email}</td>
-                <td>
-                  {/* Add action buttons or links here, like view, edit, delete */}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Box sx={{ p: 3 }}>
+        <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>#</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user.id}>
+                  <TableCell>{user.id}</TableCell>
+                  <TableCell>{user.first_name} {user.last_name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    {/* Add action buttons or links here */}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Paper>
+      </Box>
     </Layout>
   );
 };

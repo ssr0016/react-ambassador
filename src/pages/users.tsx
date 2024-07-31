@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { User } from '../models/user';
-import { Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Alert, Box, TableFooter, TablePagination, IconButton } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit'; // Removed SortIcon import
+import { Table, TableBody, TableCell, TableHead, TableRow, Paper, CircularProgress, Alert, Box, TableFooter, TablePagination, Button } from '@mui/material';
 
 const Users: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -68,10 +67,14 @@ const Users: React.FC = () => {
                   <TableCell>{user.first_name} {user.last_name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                    {/* Add other action buttons or links here */}
+                    <Button 
+                      variant="contained" 
+                      color="primary" 
+                      component="a" 
+                      href={`/users/${user.id}/links`}
+                    >
+                      View
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

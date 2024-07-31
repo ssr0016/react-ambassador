@@ -10,6 +10,9 @@ const Menu = () => {
             <NavLink to="/users" className="nav-link" aria-current="page">  
                 Users
             </NavLink>
+            <NavLink to="/products" className="nav-link" aria-current="page">  
+                Products
+            </NavLink>
             </li>
         </ul>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
 
 const Menu = () => {
   return (
@@ -6,11 +7,9 @@ const Menu = () => {
         <div className="position-sticky pt-3">
         <ul className="nav flex-column"> 
             <li className="nav-item">
-            <a className="nav-link active" aria-current="page" href="#">
-                {/* If Feather icons are being used, ensure the library is included */}
-                <span data-feather="home"></span>
-                Dashboard
-            </a>
+            <NavLink to="/users" className="nav-link" aria-current="page">  
+                Users
+            </NavLink>
             </li>
         </ul>
         </div>

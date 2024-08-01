@@ -6,7 +6,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import RedirectToUsers from './components/RedirectToUsers';
 import Links from './pages/Links';
-import Products from './pages/products/products';
+import Products from './pages/products/Products';
+import ProductForm from './pages/products/ProductForm';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route path="/users" element={<Users />} />
             <Route path="/users/:id/links" element={<Links />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/products/create" element={<ProductForm />} />
           </Routes>
       </BrowserRouter>
     </div>

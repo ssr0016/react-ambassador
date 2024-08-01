@@ -60,6 +60,13 @@ const Products: React.FC = () => {
 
   return (
     <Layout>
+      <div>
+        <div className="pt-3 pb-2 mb-3 border-bottom">
+              <Button href="/products/create" variant="contained" color="primary">Add</Button>
+        </div>
+      </div>
+
+
       <Box sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
           Products

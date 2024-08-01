@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Product } from '../../models/products';
 import axios from 'axios';
 import Layout from '../../components/Layout';
-import { Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, Paper, Box, Typography, Button, CircularProgress, Alert } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, TableFooter, TablePagination, Paper, Box, Typography, Button, CircularProgress, Alert, ToggleButtonGroup } from '@mui/material';
 
 const Products: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -94,13 +94,22 @@ const Products: React.FC = () => {
                   <TableCell>{product.description}</TableCell>
                   <TableCell>${product.price.toFixed(2)}</TableCell>
                   <TableCell>
-                    <Button 
-                      variant="contained" 
-                      color="error"
-                      onClick={() => handleDelete(product.id)}
-                    >
-                      Delete
-                    </Button>
+                    <ToggleButtonGroup>
+                      <Button 
+                          variant="contained" 
+                          color="primary"
+                          href={`/products/${product.id}/edit`}
+                        >
+                          Edit
+                        </Button>
+                        <Button 
+                          variant="contained" 
+                          color="error"
+                          onClick={() => handleDelete(product.id)}
+                        >
+                          Delete
+                        </Button>
+                    </ToggleButtonGroup>
                   </TableCell>
                 </TableRow>
               ))}

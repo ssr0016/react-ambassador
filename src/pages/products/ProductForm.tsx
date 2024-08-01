@@ -1,16 +1,34 @@
-import React, { useState, SyntheticEvent } from 'react';
+import React, { useState, SyntheticEvent, useEffect } from 'react';
 import Layout from '../../components/Layout';
 import { Button, TextField, Typography, Box } from '@mui/material';
 import axios from 'axios';
-import { Navigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ProductForm = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState<number>(0);
   const [redirect, setRedirect] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { id } = useParams<{ id: string }>(); // Correctly accessing the id parameter
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  useEffect(() => {
+    if (id) {
+      (async () => {
+        try {
+          const { data } = await axios.get(`products/${id}`);
+          setTitle(data.title);
+          setDescription(data.description);
+          setImage(data.image);
+          setPrice(data.price);
+        } catch (error) {
+          console.error('Error fetching product data:', error);
+        }
+      })();
+    }
+  }, [id]);
 
   const submit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -21,34 +39,39 @@ const ProductForm = () => {
       return;
     }
 
+    const data = { title, description, image, price };
+
     try {
-      await axios.post('products', {
-        title,
-        description,
-        image,
-        price
-      });
-      alert('Product created successfully!');
+      if (id) {
+        // Update existing product
+        await axios.put(`products/${id}`, data);
+      } else {
+        // Create new product
+        await axios.post('products', data);
+        alert('Product created successfully!');
+      }
+
       setRedirect(true);
     } catch (error) {
-      setError('Error creating product. Please try again.');
+      setError('Error submitting product. Please try again.');
       console.error(error);
     }
   };
 
+  // Use navigate function for redirection
   if (redirect) {
-    return <Navigate to="/products" />;
+    navigate("/products");
   }
 
   return (
     <Layout>
       <Box component="form" onSubmit={submit} sx={{ mt: 3 }}>
         <Typography variant="h5" component="h1" gutterBottom>
-          Create a New Product
+          {id ? 'Update Product' : 'Create a New Product'}
         </Typography>
-        
+
         {error && <Typography color="error" gutterBottom>{error}</Typography>}
-        
+
         <TextField
           label="Title"
           fullWidth

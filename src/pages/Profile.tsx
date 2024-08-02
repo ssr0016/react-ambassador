@@ -1,13 +1,21 @@
-import React, { useState, useEffect, SyntheticEvent } from 'react';
+import React, { Dispatch, useState, useEffect, SyntheticEvent } from 'react';
 import Layout from '../components/Layout';
 import { Button, TextField, Alert, CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
 import { User } from '../models/user';
+import { connect } from 'react-redux';
+import { setUser } from '../redux/actions/setUserAction';
 
-const Profile = () => {
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
+// Define the types for props
+type ProfileProps = {
+  user: User;
+  setUser: (user: User) => void;
+};
+
+const Profile: React.FC<ProfileProps> = ({ user, setUser }) => {
+  const [firstName, setFirstName] = useState(user.first_name || '');
+  const [lastName, setLastName] = useState(user.last_name || '');
+  const [email, setEmail] = useState(user.email || '');
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -15,20 +23,11 @@ const Profile = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const { data } = await axios.get<User>('/user');
-        setFirstName(data.first_name);
-        setLastName(data.last_name);
-        setEmail(data.email);
-      } catch (error) {
-        setError('Error fetching user data.');
-        console.error('Error fetching user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
+    // Only update state if the user object changes
+    setFirstName(user.first_name || '');
+    setLastName(user.last_name || '');
+    setEmail(user.email || '');
+  }, [user]);
 
   const infoSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -38,8 +37,11 @@ const Profile = () => {
       const response = await axios.put('/users/info', {
         first_name: firstName,
         last_name: lastName,
-        email
+        email,
       });
+
+      setUser(response.data);
+
       setSuccess('Profile updated successfully.');
       setError(null);
       console.log(response.data);
@@ -50,7 +52,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   const passwordSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -65,7 +67,7 @@ const Profile = () => {
     try {
       const response = await axios.put('/users/password', {
         password,
-        password_confirm: passwordConfirm
+        password_confirm: passwordConfirm,
       });
       setSuccess('Password updated successfully.');
       setError(null);
@@ -77,7 +79,7 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <Layout>
@@ -143,7 +145,17 @@ const Profile = () => {
         </Box>
       </form>
     </Layout>
-  )
-}
+  );
+};
 
-export default Profile;
+// Define mapStateToProps and mapDispatchToProps
+const mapStateToProps = (state: { user: User }) => ({
+  user: state.user,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  setUser: (user: User) => dispatch(setUser(user)),
+});
+
+// Connect Profile component to Redux store
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);

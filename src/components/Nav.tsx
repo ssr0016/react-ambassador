@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { User } from '../models/user';
+import { connect } from 'react-redux';
 
 type NavProps = {
   user: User | null;
@@ -52,4 +53,7 @@ const Nav: React.FC<NavProps> = ({ user }) => {
   );
 };
 
-export default Nav;
+export default connect(
+  (state: { user: User}) => ({
+  user: state.user
+})) (Nav);

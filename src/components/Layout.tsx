@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, {Dispatch, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import Nav from './Nav';
 import Menu from './Menu';
 import axios from 'axios';
 import { User } from '../models/user';
+import { connect } from 'react-redux';
+import { setUser } from '../redux/actions/setUserAction';
 
 type LayoutProps = {
   children: React.ReactNode;
+  setUser: (user: User) => void;
 };
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, setUser }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -25,11 +27,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     };
 
     fetchUserData();
-  }, [navigate]);
+  }, [navigate, setUser]);
 
   return (
     <div>
-      <Nav user={user} />
+      <Nav />
       <div className="container-fluid">
         <div className="row">
           <Menu />
@@ -44,4 +46,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-export default Layout;
+const mapStateToProps = (state: { user: User}) => ({
+  user: state.user
+})
+
+const mapDispatchProps = (dispatch: Dispatch<any>) => ({
+  setUser: (user: User) => dispatch(setUser(user))
+})
+
+export default connect(mapStateToProps, mapDispatchProps) (Layout);

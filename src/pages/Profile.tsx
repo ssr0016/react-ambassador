@@ -3,7 +3,6 @@ import Layout from '../components/Layout';
 import { Button, TextField, Alert, CircularProgress, Box } from '@mui/material';
 import axios from 'axios';
 import { User } from '../models/user';
-import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [firstName, setFirstName] = useState('');
@@ -14,7 +13,6 @@ const Profile = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
